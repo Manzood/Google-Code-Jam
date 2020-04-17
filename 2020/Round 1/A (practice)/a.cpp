@@ -1,114 +1,119 @@
 #include<cstdio>
-#include<iostream>
+#include<algorithm>
 #include<vector>
 #include<set>
-#include<cstring>
+#include<iostream>
+#include<string>
 
 using namespace std;
 
-//A couple of things here are important
-//checking if the strings match
-//should probably add this to a function, you know
-//changing answer
-//*hello
-//*cohello
-//*ll*
-//*
-//answer=cohello
+string findprefix(string s) {
+	string prefix=s.substr(0,s.find('*'));
+	return prefix;
+}
 
-//check if ans is within
-//if not, check if string provided is a subset of answer
-//if not, it is not possible
+string findsuffix(string s) {
+	string suffix;
+	bool found=false;
+	for (int i=0;i<s.size();i++) {
+		if (s[i]=='*') {
+			suffix.resize(0);
+			found=true;
+		}
+		else {
+			suffix+=s[i];
+		}
+	}
+	if (!found)
+		suffix.resize(0);
+	return suffix;
+}
 
-int checkrest (char *str, char *ans, int strbegin) {
-	int len=strlen(str);
-	int anslen=strlen(ans);
-	int j=0;
-	for (int i=strbegin;i<len && i<strbegin+anslen;i++) {
-		if (str[i]!=ans[j++]) {
+int compareprefix (string ansprefix, string prefix) {
+	int len1=prefix.size();
+	int len2=ansprefix.size();
+	for (int i=0;i<min(len1,len2);i++) {
+		if (ansprefix[i]!=prefix[i]) {
 			return 0;
 		}
 	}
 	return 1;
 }
 
-int checkstring (char *str, char *ans) {
-	int len=strlen(str);
-	int anslen=strlen(ans);
-	int ansptr=0;
-	int strptr=0;
-	bool star=false;
-	if (anslen>len) {
-		//check if str is within ans
-		while (ansptr<anslen) {
-			if (ans[ansptr]==str[0]) {
-				if (checkrest(ans,str,ansptr)) {
-					return 0;
-				}
-			}
-			ansptr++;
+int comparesuffix (string anssuffix, string suffix) {
+	int len1=suffix.size();
+	int len2=anssuffix.size();
+	for (int i=min(len1,len2)-1;i>=0;i--) {
+		//printf("%c %c\n",anssuffix[i+len2-min(len1,len2)],suffix[i+len1-min(len1,len2)]);
+		if (anssuffix[i+len2-min(len1,len2)]!=suffix[i+len1-min(len1,len2)]) {
+			return 0;
 		}
-		return -1;
 	}
-	else {
-		//check if ans is within str and expand to fit
-		if (anslen==0) {
-			return 1;
-		}
-		while (strptr<len) {
-			if (str[strptr]==ans[0]) {
-				if (checkrest(str,ans,strptr))
-					return 1;
-			}
-			strptr++;
-		}
-		printf("%s\n%s\nreturning\n",str,ans);
-		return -1;
-	}
+	return 1;
 }
 
-void testcase () {
+void testcase() {
 	int n;
 	scanf("%d",&n);
-	char s[110];
-	char ans[110];
-	int anslen=0;
-	bool star=false;
-	char s2[110];
+	bool possible=true;
+	string prefix,suffix,mid,current;
+	string ansprefix,ansmid,anssuffix;
 	for (int i=0;i<n;i++) {
-		scanf("%s",s2);
-		int len=strlen(s2);
-		for (int i=1;i<len;i++) {
-			s[i-1]=s2[i];
+		cin>>current;
+		int len=current.size();
+		prefix=findprefix(current);
+		suffix=findsuffix(current);
+		if (prefix.size()!=len && suffix.size()!=len-1) {
+			mid=current.substr(current.find('*')+1,len-suffix.size()-2-prefix.size());
 		}
-		len--;
-		//printf("%s",s);
-		int x=checkstring(s,ans);
-		if (x==1) {
-			for (int j=0;j<len;j++) {
-				ans[j]=s[j];
-				anslen=j+1;
+		if (ansprefix.size()==0) {
+			ansprefix=prefix;
+		}
+		else {
+			if (!compareprefix(ansprefix,prefix)) {
+				possible=false;
+			}
+			else {
+				if (prefix.size()>ansprefix.size()) {
+					ansprefix=prefix;
+				}
 			}
 		}
-		else if (x==-1) {
-			printf("*");
-			return;
+		if (anssuffix.size()==0) {
+			anssuffix=suffix;
 		}
+		else {
+			//compare suffix
+			if (!comparesuffix(anssuffix,suffix)) {
+				possible=false;
+			}
+			else {
+				if (suffix.size()>anssuffix.size()) {
+					anssuffix=suffix;
+				}
+			}
+		}
+		ansmid+=mid;
 	}
-	for (int i=0;i<anslen;i++) {
-		printf("%c",ans[i]);
+	if (possible==true) {
+		cout<<ansprefix;
+		for (int i=0;i<ansmid.size();i++) {
+			if (ansmid[i]!='*') {
+				cout<<ansmid[i];
+			}
+		}
+		cout<<anssuffix; 
+	}
+	else {
+		cout<<'*';
 	}
 }
 
+
 int main () {
-	int test;
-	cin>>test;
-	//char teststr1[100];
-	//char teststr2[100];
-	//cin>>teststr1>>teststr2;
-	//cout<<teststr1<<endl<<teststr2<<endl;
-	//cout<<checkstring(teststr1,teststr2)<<endl;
-	for (int i=1;i<=test;i++) {
+	int t;
+	cin>>t;
+	for (int test=1;test<=t;test++) {
 		printf("Case #%d: ",test);
 		testcase();
 		printf("\n");
