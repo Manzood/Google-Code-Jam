@@ -1,6 +1,6 @@
 /**
  *    author:  tourist
- *    created: 31.03.2018 11:41:48       
+ *    created: 31.03.2018 11:41:48
 **/
 #include <bits/stdc++.h>
 
