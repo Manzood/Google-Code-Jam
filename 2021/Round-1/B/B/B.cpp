@@ -31,13 +31,13 @@ void debug_out(vector<string> args, int idx, int LINE_NUM, Head H, Tail... T) {
 void testcase() {
     int n, a, b;
     scanf("%lld%lld%lld", &n, &a, &b);
-    vector <int> A(n + 20, 0);
+    vector <int> A(n + 30, 0);
     for (int i = 0; i < n; i++) {
         scanf("%lld", &A[i]);
     }
     int ans = n + 100;
     bool possible = false;
-    for (int i = n + 15; i >= n; i--) {
+    for (int i = n + 20; i >= n; i--) {
         bool satisfied = true;
         int cur = i;
         vector <int> temp (cur + 1, 0);
