@@ -25,9 +25,9 @@ void propagate(int node, vector <vector <int>>& adj, vector <int>& f, vector <in
             minval = subtreemax[u];
         }
     }
-    if (node == 3) debug(adj[node][ind]);
-    if (node == 3) debug(subtreemax[adj[node][ind]]);
-    if (node == 3) debug(f[node]);
+    // if (node == 3) debug(adj[node][ind]);
+    // if (node == 3) debug(subtreemax[adj[node][ind]]);
+    // if (node == 3) debug(f[node]);
     if (ind >= 0 && f[node] > subtreemax[adj[node][ind]]) {
         swap(f[node], f[adj[node][ind]]);
     }
@@ -37,11 +37,12 @@ void propagate(int node, vector <vector <int>>& adj, vector <int>& f, vector <in
 }
 
 int getmax (int node, vector <vector <int>>& adj, vector <int>& f, vector <int>& subtreemax) {
-    int retval = 0;
-    retval = f[node];
+    int retval = mod;
     for (auto u: adj[node]) {
-        retval = max(retval, getmax(u, adj, f, subtreemax));
+        retval = min(retval, getmax(u, adj, f, subtreemax));
     }
+    if (adj[node].size() == 0) retval = 0;
+    retval = max(retval, f[node]);
     subtreemax[node] = retval;
     return retval;
 }
@@ -64,9 +65,9 @@ void solve([[maybe_unused]] int test) {
     }
     vector <int> subtreemax(n + 1, 0);
     getmax(0, adj, f, subtreemax);
-    debug(f);
+    // debug(f);
     propagate(0, adj, f, subtreemax);
-    debug(f);
+    // debug(f);
     int ans = 0;
     for (int i = 0; i <= n; i++) {
         if ((int) adj[i].size() == 0) {
