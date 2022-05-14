@@ -1,0 +1,55 @@
+#include "bits/stdc++.h"
+
+#ifdef local
+#include "custom/debugger.h"
+#else
+#define debug(...) 42;
+#endif
+
+using namespace std;
+#define int long long
+
+vector<vector<int>> grid1;
+vector<vector<int>> grid2;
+void draw_circle_perimeter(int R) {
+    for (int x = -R; x <= R; x++) {
+        int y = (int)sqrt(R * R - x * x);
+        grid2[x][y] = 1;
+        grid2[x][-y] = 1;
+        grid2[y][x] = 1;
+        grid2[-y][x] = 1;
+    }
+}
+
+void draw_circle_filled(int R) {
+    for (int x = -R; x <= R; x++) {
+        for (int y = -R; x <= R; x++) {
+            if ((int)sqrt(x * x + y * y) <= R) {
+                grid1[x][y] = 1;
+            }
+        }
+    }
+}
+
+void draw_circle_filled_wrong(int R) {
+    for (int r = 0; r <= R; r++) {
+        draw_circle_perimeter(r);
+    }
+}
+
+void solve([[maybe_unused]] int test) {
+    int r;
+    scanf("%lld", &r);
+    grid1 = vector<vector<int>>(2 * r + 1, vector<int>(2 * r + 1, 0));
+    grid2 = vector<vector<int>>(2 * r + 1, vector<int>(2 * r + 1, 0));
+    draw_circle_filled(r);
+    draw_circle_filled_wrong(r);
+}
+
+int32_t main() {
+    int t = 1;
+    cin >> t;
+    for (int tt = 1; tt <= t; tt++) {
+        solve(tt);
+    }
+}
